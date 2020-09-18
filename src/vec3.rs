@@ -1,7 +1,7 @@
 use std::ops;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Vec3<T: Clone + Copy> {
+pub struct Vec3 Copy> {
     e1: T,
     e2: T,
     e3: T,
