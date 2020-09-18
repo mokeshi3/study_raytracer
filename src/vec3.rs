@@ -16,11 +16,7 @@ type Color = Vec3<f64>;
 #[allow(dead_code)]
 impl<T: Copy + Into<f64> + ops::Mul<Output = T>> Vec3<T> {
     pub fn new(e1: T, e2: T, e3: T) -> Self {
-        Self {
-            e1,
-            e2,
-            e3
-        }
+        Self { e1, e2, e3 }
     }
 
     pub fn x(&self) -> T {
@@ -44,7 +40,7 @@ impl<T: Copy + Into<f64> + ops::Mul<Output = T>> Vec3<T> {
         let e2: f64 = self.e2.into();
         let e3: f64 = self.e3.into();
 
-        return e1*e1*e2*e2*e3*e3;
+        return e1 * e1 * e2 * e2 * e3 * e3;
     }
 
     pub fn unit_vector(&self) -> Vec3<f64> {
@@ -60,10 +56,7 @@ impl<T: Copy + Into<f64> + ops::Mul<Output = T>> Vec3<T> {
         let b: f64 = self.e2.into() * 255.999;
         let g: f64 = self.e3.into() * 255.999;
 
-        println!("{} {} {}",
-                 r as usize,
-                 b as usize,
-                 g as usize,);
+        println!("{} {} {}", r as usize, b as usize, g as usize,);
     }
 }
 
@@ -155,7 +148,10 @@ pub fn dot<T: ops::Mul<Output = T> + Copy>(v1: &Vec3<T>, v2: &Vec3<T>) -> Vec3<T
 }
 
 #[allow(dead_code)]
-pub fn cross<T: ops::Mul<Output = T> + ops::Sub<Output = T> + Copy>(u: &Vec3<T>, v: &Vec3<T>) -> Vec3<T> {
+pub fn cross<T: ops::Mul<Output = T> + ops::Sub<Output = T> + Copy>(
+    u: &Vec3<T>,
+    v: &Vec3<T>,
+) -> Vec3<T> {
     Vec3 {
         e1: u.e2 * v.e3 - u.e3 * v.e2,
         e2: u.e3 * v.e1 - u.e1 * v.e3,

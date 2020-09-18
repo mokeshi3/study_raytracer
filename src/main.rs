@@ -12,12 +12,11 @@ fn main() {
 
     for j in (0..IMAGE_HEIGHT).rev() {
         for i in 0..IMAGE_WIDTH {
-
-            let pixel = Vec3 {
-            e1: i as f32 / (IMAGE_WIDTH as f32 - 1.),
-            e2: j as f32 / (IMAGE_HEIGHT as f32 - 1.),
-            e3: 0.25,
-            };
+            let pixel = Vec3::new(
+                i as f32 / (IMAGE_WIDTH as f32 - 1.),
+                j as f32 / (IMAGE_HEIGHT as f32 - 1.),
+                0.25,
+            );
 
             pixel.println_color();
         }
