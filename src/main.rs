@@ -1,3 +1,7 @@
+mod vec3;
+
+use vec3::Vec3;
+
 fn main() {
     // Image
     const IMAGE_WIDTH: usize = 256;
