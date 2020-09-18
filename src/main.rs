@@ -12,15 +12,14 @@ fn main() {
 
     for j in (0..IMAGE_HEIGHT).rev() {
         for i in 0..IMAGE_WIDTH {
-            let r: f32 = i as f32 / (IMAGE_WIDTH as f32 - 1.);
-            let g: f32 = j as f32 / (IMAGE_HEIGHT as f32 - 1.);
-            let b: f32 = 0.25;
 
-            let ir = (255.999*r) as i32;
-            let ig = (255.999*g) as i32;
-            let ib = (255.999*b) as i32;
+            let pixel = Vec3 {
+            e1: i as f32 / (IMAGE_WIDTH as f32 - 1.),
+            e2: j as f32 / (IMAGE_HEIGHT as f32 - 1.),
+            e3: 0.25,
+            };
 
-            println!("{} {} {}", ir, ig, ib);
+            pixel.println_color();
         }
     }
 }

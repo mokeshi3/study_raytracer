@@ -15,6 +15,14 @@ type Color = Vec3<f64>;
 
 #[allow(dead_code)]
 impl<T: Copy + Into<f64> + ops::Mul<Output = T>> Vec3<T> {
+    pub fn new(e1: T, e2: T, e3: T) -> Self {
+        Self {
+            e1,
+            e2,
+            e3
+        }
+    }
+
     pub fn x(&self) -> T {
         return self.e1;
     }
