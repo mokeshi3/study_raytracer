@@ -46,6 +46,17 @@ impl<T: Copy + Into<f64> + ops::Mul<Output = T>> Vec3<T> {
             e3: self.e3.into() / self.length(),
         }
     }
+
+    pub fn println_color(&self) {
+        let r: f64 = self.e1.into() * 255.999;
+        let b: f64 = self.e2.into() * 255.999;
+        let g: f64 = self.e3.into() * 255.999;
+
+        println!("{} {} {}",
+                 r as usize,
+                 b as usize,
+                 g as usize,);
+    }
 }
 
 impl<T: ops::Add<Output = T> + Copy> ops::Add<Vec3<T>> for Vec3<T::Output> {
