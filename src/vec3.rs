@@ -1,21 +1,29 @@
 use std::ops;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Vec3 Copy> {
+pub struct Vec3<T: Copy> {
     e1: T,
     e2: T,
     e3: T,
 }
 
 #[allow(dead_code)]
-type Point3 = Vec3<f64>;
+pub type Point3 = Vec3<f64>;
 
 #[allow(dead_code)]
-type Color = Vec3<f64>;
+pub type Color = Vec3<f64>;
 
 #[allow(dead_code)]
-impl<T: Copy + Into<f64> + ops::Mul<Output = T>> Vec3<T> {
-    pub fn new(e1: T, e2: T, e3: T) -> Self {
+impl<T: Copy + Into<f64> + ops::Mul<Output = T> + Default> Vec3<T> {
+    pub fn new() -> Self {
+        Self {
+            e1: T::default(),
+            e2: T::default(),
+            e3: T::default(),
+        }
+    }
+
+    pub fn build(e1: T, e2: T, e3: T) -> Self {
         Self { e1, e2, e3 }
     }
 
