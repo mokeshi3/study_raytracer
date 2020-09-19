@@ -80,7 +80,7 @@ impl<T: ops::Neg<Output = T> + Copy> ops::Neg for Vec3<T> {
     }
 }
 
-impl<T: ops::Add<Output = T> + Copy> ops::Add<Vec3<T>> for Vec3<T::Output> {
+impl<T: ops::Add<Output = T> + Copy> ops::Add<Vec3<T>> for Vec3<T> {
     type Output = Vec3<T>;
 
     fn add(self, rhs: Vec3<T>) -> Self::Output {
@@ -88,6 +88,18 @@ impl<T: ops::Add<Output = T> + Copy> ops::Add<Vec3<T>> for Vec3<T::Output> {
             e1: self.e1 + rhs.e1,
             e2: self.e2 + rhs.e2,
             e3: self.e3 + rhs.e3,
+        }
+    }
+}
+
+impl<T: ops::Add<Output = T> + Copy> ops::Add<T> for Vec3<T> {
+    type Output = Vec3<T>;
+
+    fn add(self, rhs: T) -> Self::Output {
+        Vec3 {
+            e1: self.e1 + rhs,
+            e2: self.e2 + rhs,
+            e3: self.e3 + rhs,
         }
     }
 }
@@ -100,6 +112,18 @@ impl<T: ops::Sub<Output = T> + Copy> ops::Sub<Vec3<T>> for Vec3<T> {
             e1: self.e1 - rhs.e1,
             e2: self.e2 - rhs.e2,
             e3: self.e3 - rhs.e3,
+        }
+    }
+}
+
+impl<T: ops::Sub<Output = T> + Copy> ops::Sub<T> for Vec3<T> {
+    type Output = Vec3<T>;
+
+    fn sub(self, rhs: T) -> Self::Output {
+        Vec3 {
+            e1: self.e1 - rhs,
+            e2: self.e2 - rhs,
+            e3: self.e3 - rhs,
         }
     }
 }
@@ -269,7 +293,7 @@ mod tests {
     }
 
     #[test]
-    fn test_add() {
+    fn test_add_vec3() {
         let v1 = Vec3::build(1, 1, 1);
         let v2 = Vec3::build(2, 2, 2);
         let ans = Vec3 {
@@ -282,7 +306,14 @@ mod tests {
     }
 
     #[test]
-    fn test_sub() {
+    fn test_add_t() {
+        let v1 = Vec3::build(1, 2, 3);
+        let ans = Vec3:: build(2, 3, 4);
+        assert_eq!(v1+1, ans);
+    }
+
+    #[test]
+    fn test_sub_vec3() {
         let v1 = Vec3::build(1, 1, 1);
         let v2 = Vec3::build(2, 2, 2);
         let ans = Vec3 {
@@ -292,6 +323,13 @@ mod tests {
         };
 
         assert_eq!(v1-v2, ans);
+    }
+
+    #[test]
+    fn test_sub_t() {
+        let v1 = Vec3::build(1, 2, 3);
+        let ans = Vec3::build(0, 1, 2);
+        assert_eq!(v1-1, ans);
     }
 
     #[test]
