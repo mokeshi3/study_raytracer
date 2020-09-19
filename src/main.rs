@@ -13,7 +13,7 @@ fn ray_color(r: &Ray) -> Color {
 fn main() {
     // Image
     const ASPECT_RATIO: f64 = 16. / 9.;
-    const IMAGE_WIDTH: usize = 100;
+    const IMAGE_WIDTH: usize = 400;
     const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
 
     // Camera
