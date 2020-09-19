@@ -1,6 +1,6 @@
 use std::ops;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Vec3<T: Copy> {
     e1: T,
     e2: T,
@@ -48,7 +48,7 @@ impl<T: Copy + Into<f64> + ops::Mul<Output = T> + Default> Vec3<T> {
         let e2: f64 = self.e2.into();
         let e3: f64 = self.e3.into();
 
-        return e1 * e1 * e2 * e2 * e3 * e3;
+        return e1 * e1 + e2 * e2 + e3 * e3;
     }
 
     pub fn unit_vector(&self) -> Vec3<f64> {
@@ -65,6 +65,18 @@ impl<T: Copy + Into<f64> + ops::Mul<Output = T> + Default> Vec3<T> {
         let g: f64 = self.e3.into() * 255.999;
 
         println!("{} {} {}", r as usize, b as usize, g as usize,);
+    }
+}
+
+impl<T: ops::Neg<Output = T> + Copy> ops::Neg for Vec3<T> {
+    type Output = Vec3<T>;
+
+    fn neg(self) -> Self::Output {
+        Vec3 {
+            e1: -self.e1,
+            e2: -self.e2,
+            e3: -self.e3,
+        }
     }
 }
 
@@ -147,12 +159,8 @@ impl<T: Copy + std::fmt::Display> std::fmt::Display for Vec3<T> {
 }
 
 #[allow(dead_code)]
-pub fn dot<T: ops::Mul<Output = T> + Copy>(v1: &Vec3<T>, v2: &Vec3<T>) -> Vec3<T> {
-    Vec3 {
-        e1: v1.e1 * v2.e1,
-        e2: v1.e1 * v2.e1,
-        e3: v1.e1 * v2.e1,
-    }
+pub fn dot<T: ops::Mul<Output = T> + ops::Add<Output = T> + Copy>(v1: &Vec3<T>, v2: &Vec3<T>) -> T {
+    v1.e1 * v2.e1 + v1.e2 * v2.e2 + v1.e3 * v2.e3
 }
 
 #[allow(dead_code)]
@@ -164,5 +172,190 @@ pub fn cross<T: ops::Mul<Output = T> + ops::Sub<Output = T> + Copy>(
         e1: u.e2 * v.e3 - u.e3 * v.e2,
         e2: u.e3 * v.e1 - u.e1 * v.e3,
         e3: u.e1 * v.e2 - u.e2 * v.e1,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        assert_eq!(
+            Vec3::new(),
+            Vec3 {
+                e1: f64::default(),
+                e2: f64::default(),
+                e3: f64::default(),
+            }
+        );
+    }
+
+    #[test]
+    fn test_build() {
+        assert_eq!(
+            Vec3::build(1., 2., 3.),
+            Vec3 {
+                e1: 1.,
+                e2: 2.,
+                e3: 3.,
+            }
+        );
+    }
+
+    #[test]
+    fn test_x() {
+        let v = Vec3::build(1, 2, 3);
+        assert_eq!(
+            v.x(),
+            1,
+            );
+    }
+
+    #[test]
+    fn test_y() {
+        let v = Vec3::build(1, 2, 3);
+        assert_eq!(
+            v.y(),
+            2,
+            );
+    }
+
+    #[test]
+    fn test_z() {
+        let v = Vec3::build(1, 2, 3);
+        assert_eq!(
+            v.z(),
+            3,
+            );
+    }
+
+    #[test]
+    fn test_length() {
+        let v = Vec3::build(1, 2, 3);
+        let ans = (1f64*1f64+2f64*2f64+3f64*3f64).sqrt();
+        assert_eq!(v.length(), ans);
+    }
+
+    #[test]
+    fn test_length_squared() {
+        let v = Vec3::build(1, 2, 3);
+        let ans = 1f64*1f64+2f64*2f64+3f64*3f64;
+        assert_eq!(v.length_squared(), ans);
+    }
+
+    #[test]
+    fn test_unit_vector() {
+        let v = Vec3::build(1, 2, 2);
+        let ans = Vec3 {
+            e1: 1. / 3.,
+            e2: 2. / 3.,
+            e3: 2. / 3.,
+        };
+
+        assert_eq!(v.unit_vector(), ans);
+    }
+
+    #[test]
+    fn test_neg() {
+        let v = Vec3::build(1, 2, 3);
+        let ans = Vec3 {
+            e1: -1,
+            e2: -2,
+            e3: -3,
+        };
+
+        assert_eq!(-v, ans);
+    }
+
+    #[test]
+    fn test_add() {
+        let v1 = Vec3::build(1, 1, 1);
+        let v2 = Vec3::build(2, 2, 2);
+        let ans = Vec3 {
+            e1: 1+2,
+            e2: 1+2,
+            e3: 1+2,
+        };
+
+        assert_eq!(v1+v2, ans);
+    }
+
+    #[test]
+    fn test_sub() {
+        let v1 = Vec3::build(1, 1, 1);
+        let v2 = Vec3::build(2, 2, 2);
+        let ans = Vec3 {
+            e1: 1-2,
+            e2: 1-2,
+            e3: 1-2,
+        };
+
+        assert_eq!(v1-v2, ans);
+    }
+
+    #[test]
+    fn test_mul() {
+        let v1 = Vec3::build(1, 1, 1);
+        let ans = Vec3 {
+            e1: 1*2,
+            e2: 1*2,
+            e3: 1*2,
+        };
+
+        assert_eq!(v1*2, ans);
+    }
+
+    #[test]
+    fn test_div() {
+        let v1 = Vec3::build(1., 2., 3.);
+        let ans = Vec3 {
+            e1: 1./2.,
+            e2: 2./2.,
+            e3: 3./2.,
+        };
+
+        assert_eq!(v1/2., ans);
+    }
+
+    #[test]
+    fn test_index() {
+        let v = Vec3::build(1, 2, 3);
+        assert_eq!(v[0], 1);
+        assert_eq!(v[1], 2);
+        assert_eq!(v[2], 3);
+    }
+
+    #[test]
+    fn test_index_mut() {
+        let mut v = Vec3::build(1, 2, 3);
+        v[0] = 0;
+        v[1] = 0;
+        v[2] = 0;
+        let ans = Vec3 {
+            e1: 0,
+            e2: 0,
+            e3: 0,
+        };
+        assert_eq!(v, ans);
+    }
+
+    #[test]
+    fn test_dot() {
+        let v1 = Vec3::build(1, 2, 3);
+        let v2 = Vec3::build(1, 2, 3);
+        assert_eq!(dot(&v1, &v2), 1+4+9);
+    }
+
+    #[test]
+    fn test_cross() {
+        let v1 = Vec3::build(0, 1, 2);
+        let v2 = Vec3::build(0, 1, 2);
+        let ans = Vec3 {
+            e1: 1*2 - 2*1,
+            e2: 2*0 - 0*2,
+            e3: 0*1 - 1*0,
+        };
+        assert_eq!(cross(&v1, &v2), ans);
     }
 }
