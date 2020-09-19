@@ -4,20 +4,25 @@ mod ray;
 use vec3::{Vec3, Color, Point3, dot};
 use ray::Ray;
 
-fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> bool {
+fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
     let oc = *r.origin() - *center;
-    let a = dot(r.direction(), r.direction());
-    let b = 2.0 * dot(&oc, r.direction());
-    let c = dot(&oc, &oc) - radius*radius;
-    let discriminant = b*b - 4.*a*c;
-    discriminant > 0.
+    let a = r.direction().length_squared();
+    let half_b = dot(&oc, r.direction());
+    let c = oc.length_squared() - radius*radius;
+    let discriminant = half_b*half_b - a*c;
+    if discriminant < 0. {
+        return -1.0;
+    } else {
+        return (-half_b - discriminant.sqrt()) / (2.*a);
+    }
 }
 
 fn ray_color(r: &Ray) -> Color {
-    if hit_sphere(&Point3::build(0., 0., -1.), 0.5, r) {
-        return Color::build(1., 0., 0.);
+    let t = hit_sphere(&Point3::build(0., 0., -1.), 0.5, r);
+    if t > 0. {
+        let n = (r.at(t) - Vec3::build(0., 0., -1.)).unit_vector();
+        return Color::build(n.x()*0.5+1., n.y()+1., n.z()+1.);
     }
-
     let unit_direction = r.direction().unit_vector();
     let t = 0.5*(unit_direction.y() + 1.0);
     Color::build(1.0, 1.0, 1.0)*(1.0-t) + Color::build(0.5, 0.7, 1.0)*t
@@ -26,7 +31,7 @@ fn ray_color(r: &Ray) -> Color {
 fn main() {
     // Image
     const ASPECT_RATIO: f64 = 16. / 9.;
-    const IMAGE_WIDTH: usize = 400;
+    const IMAGE_WIDTH: usize = 1000;
     const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
 
     // Camera
