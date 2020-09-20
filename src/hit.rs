@@ -11,7 +11,7 @@ pub struct HitRecord {
 
 #[allow(dead_code)]
 impl HitRecord {
-    fn set_face_normal(&mut self, r: &Ray, outward_normal: Vec3<f64>) {
+    pub fn set_face_normal(&mut self, r: &Ray, outward_normal: Vec3<f64>) {
         let front_face = dot(r.direction(), &outward_normal) < 0.;
         self.normal = match front_face {
             true => outward_normal,
