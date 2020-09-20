@@ -1,10 +1,23 @@
 use crate::ray::Ray;
-use crate::vec3::{Point3, Vec3};
+use crate::vec3::{Point3, Vec3, dot};
 
+#[allow(dead_code)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3<f64>,
     pub t: f64,
+    front_face: bool,
+}
+
+#[allow(dead_code)]
+impl HitRecord {
+    fn set_face_normal(&mut self, r: &Ray, outward_normal: Vec3<f64>) {
+        let front_face = dot(r.direction(), &outward_normal) < 0.;
+        self.normal = match front_face {
+            true => outward_normal,
+            false => -outward_normal,
+        }
+    }
 }
 
 pub trait Hittable {
